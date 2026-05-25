@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Journey Details</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+padding:0;
+}
+
+.container{
+width:600px;
+background:white;
+padding:20px;
+margin:auto;
+margin-top:30px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
+}
+
+h2{
+text-align:center;
+color:blue;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:12px;
+border:1px solid gray;
+border-radius:5px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:blue;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:darkblue;
+}
+
+.passenger-box{
+border:1px solid gray;
+padding:15px;
+margin-top:20px;
+border-radius:10px;
+background:#f9f9f9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Journey Details</h2>
+
+<input
+type="text"
+id="from_place"
+placeholder="From Place"
+>
+
+<input
+type="text"
+id="to_place"
+placeholder="To Place"
+>
+
+<input
+type="date"
+id="journey_date"
+>
+
+<select id="bus_type">
+
+<option value="">Select Bus Type</option>
+
+<option>Sleeper</option>
+
+<option>Seater</option>
+
+</select>
+
+<input
+type="text"
+id="travels_name"
+placeholder="Travels Name"
+>
+
+<input
+type="number"
+id="ticket_count"
+placeholder="Number Of Tickets"
+min="1"
+max="6"
+>
+
+<button onclick="generatePassengers()">
+
+Generate Passenger Forms
+
+</button>
+
+<div id="passengerForms"></div>
+
+<button onclick="goToPricePage()">
+
+Next
+
+</button>
+
+</div>
+
+<script>
+
+function generatePassengers(){
+
+const count =
+document.getElementById("ticket_count").value;
+
+if(count=="" || count<=0){
+
+alert("Enter Valid Ticket Count");
+
+return;
+
+}
+
+let html = "";
+
+for(let i=1;i<=count;i++){
+
+html += `
+
+<div class="passenger-box">
+
+<h3>Passenger ${i}</h3>
+
+<input
+type="text"
+id="name${i}"
+placeholder="Passenger Name"
+>
+
+<input
+type="number"
+id="age${i}"
+placeholder="Passenger Age"
+>
+
+<select id="gender${i}">
+
+<option value="">Select Gender</option>
+
+<option>Male</option>
+
+<option>Female</option>
+
+<option>Other</option>
+
+</select>
+
+<select id="seat${i}">
+
+<option value="">Select Seat</option>
+
+${generateSeats()}
+
+</select>
+
+</div>
+
+`;
+
+}
+
+document.getElementById("passengerForms").innerHTML =
+html;
+
+}
+
+function generateSeats(){
+
+let seats = "";
+
+for(let i=1;i<=16;i++){
+
+seats += `<option>S${i}</option>`;
+
+}
+
+for(let i=1;i<=20;i++){
+
+seats += `<option>L${i}</option>`;
+
+}
+
+return seats;
+
+}
+
+function goToPricePage(){
+
+const from_place =
+document.getElementById("from_place").value;
+
+const to_place =
+document.getElementById("to_place").value;
+
+const journey_date =
+document.getElementById("journey_date").value;
+
+const bus_type =
+document.getElementById("bus_type").value;
+
+const travels_name =
+document.getElementById("travels_name").value;
+
+const ticket_count =
+document.getElementById("ticket_count").value;
+
+if(
+from_place=="" ||
+to_place=="" ||
+journey_date=="" ||
+bus_type=="" ||
+travels_name=="" ||
+ticket_count==""
+){
+
+alert("Please Fill All Journey Details");
+
+return;
+
+}
+
+let passengers = [];
+
+for(let i=1;i<=ticket_count;i++){
+
+const passenger_name =
+document.getElementById(`name${i}`).value;
+
+const age =
+document.getElementById(`age${i}`).value;
+
+const gender =
+document.getElementById(`gender${i}`).value;
+
+const seat_number =
+document.getElementById(`seat${i}`).value;
+
+if(
+passenger_name=="" ||
+age=="" ||
+gender=="" ||
+seat_number==""
+){
+
+alert(`Please Fill Passenger ${i} Details`);
+
+return;
+
+}
+
+passengers.push({
+
+passenger_name:passenger_name,
+
+age:age,
+
+gender:gender,
+
+seat_number:seat_number
+
+})
+
+}
+
+let ticketPrice = 0;
+
+if(bus_type=="Sleeper"){
+
+ticketPrice = 1200;
+
+}
+else{
+
+ticketPrice = 800;
+
+}
+
+const base_price =
+ticket_count * ticketPrice;
+
+const gst =
+base_price * 0.18;
+
+const state_tax = 100;
+
+const toll_fee = 50;
+
+const total_price =
+base_price + gst + state_tax + toll_fee;
+
+const journeyData = {
+
+from_place:from_place,
+
+to_place:to_place,
+
+journey_date:journey_date,
+
+bus_type:bus_type,
+
+travels_name:travels_name,
+
+ticket_count:ticket_count,
+
+base_price:base_price,
+
+gst:gst,
+
+state_tax:state_tax,
+
+toll_fee:toll_fee,
+
+total_price:total_price,
+
+passengers:passengers
+
+};
+
+localStorage.setItem(
+
+"journeyData",
+
+JSON.stringify(journeyData)
+
+);
+
+window.location.href="price.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

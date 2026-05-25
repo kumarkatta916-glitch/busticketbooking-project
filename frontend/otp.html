@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>OTP Verification</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+padding:0;
+}
+
+.container{
+width:400px;
+background:white;
+padding:20px;
+margin:auto;
+margin-top:100px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
+}
+
+h2{
+text-align:center;
+color:blue;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:1px solid gray;
+border-radius:5px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:blue;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:darkblue;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>OTP Verification</h2>
+
+<input
+type="text"
+id="otp"
+placeholder="Enter OTP"
+>
+
+<button onclick="verifyOTP()">
+
+Verify OTP
+
+</button>
+
+</div>
+
+<script>
+
+function verifyOTP(){
+
+const otp =
+document.getElementById("otp").value;
+
+if(otp==""){
+
+alert("Please Enter OTP");
+
+return;
+
+}
+
+const registerData =
+JSON.parse(localStorage.getItem("registerData"));
+
+fetch("http://localhost:5000/register",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+full_name:registerData.full_name,
+
+username:registerData.username,
+
+email:registerData.email,
+
+phone:registerData.phone,
+
+country:registerData.country,
+
+state:registerData.state,
+
+password:registerData.password,
+
+otp:otp
+
+})
+
+})
+
+.then(response=>response.json())
+
+.then(data=>{
+
+if(data.status=="success"){
+
+alert("Registration Successful");
+
+window.location.href="login.html";
+
+}
+else{
+
+alert(data.message);
+
+}
+
+})
+
+.catch(error=>{
+
+alert("Backend Connection Failed");
+
+console.log(error);
+
+})
+
+}
+
+</script>
+
+</body>
+
+</html>

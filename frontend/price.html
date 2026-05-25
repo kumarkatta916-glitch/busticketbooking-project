@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Price Details</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+padding:0;
+}
+
+.container{
+width:500px;
+background:white;
+padding:20px;
+margin:auto;
+margin-top:50px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
+}
+
+h2{
+text-align:center;
+color:blue;
+}
+
+.price-box{
+margin-top:20px;
+padding:15px;
+border:1px solid gray;
+border-radius:10px;
+background:#f9f9f9;
+}
+
+p{
+font-size:18px;
+margin:10px 0;
+}
+
+.total{
+font-size:24px;
+font-weight:bold;
+color:green;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:blue;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:darkblue;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Price Details</h2>
+
+<div class="price-box" id="priceDetails">
+
+</div>
+
+<button onclick="goToPayment()">
+
+Proceed To Payment
+
+</button>
+
+</div>
+
+<script>
+
+const data =
+JSON.parse(localStorage.getItem("journeyData"));
+
+document.getElementById("priceDetails").innerHTML = `
+
+<p><b>From:</b> ${data.from_place}</p>
+
+<p><b>To:</b> ${data.to_place}</p>
+
+<p><b>Journey Date:</b> ${data.journey_date}</p>
+
+<p><b>Bus Type:</b> ${data.bus_type}</p>
+
+<p><b>Travels Name:</b> ${data.travels_name}</p>
+
+<hr>
+
+<p><b>Base Ticket Price:</b> ₹ ${data.base_price}</p>
+
+<p><b>GST (18%):</b> ₹ ${data.gst}</p>
+
+<p><b>State Tax:</b> ₹ ${data.state_tax}</p>
+
+<p><b>Toll Fee:</b> ₹ ${data.toll_fee}</p>
+
+<hr>
+
+<p class="total">
+
+Total Amount: ₹ ${data.total_price}
+
+</p>
+
+`;
+
+function goToPayment(){
+
+window.location.href = "payment.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

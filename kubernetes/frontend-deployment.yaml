@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: frontend-deployment
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: frontend
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: frontend
+
+    spec:
+
+      containers:
+
+      - name: frontend-container
+
+        image: kiran5454/bus-frontend:v29
+
+        ports:
+
+        - containerPort: 80

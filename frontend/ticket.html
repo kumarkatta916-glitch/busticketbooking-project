@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Ticket Confirmation</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+padding:0;
+}
+
+.container{
+width:700px;
+background:white;
+padding:20px;
+margin:auto;
+margin-top:30px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
+}
+
+h1{
+text-align:center;
+color:green;
+}
+
+.ticket-box{
+margin-top:20px;
+padding:20px;
+border:2px dashed gray;
+border-radius:10px;
+background:#f9f9f9;
+}
+
+p{
+font-size:18px;
+margin:8px 0;
+}
+
+.passenger-box{
+margin-top:20px;
+padding:15px;
+border:1px solid gray;
+border-radius:10px;
+background:white;
+}
+
+.total{
+font-size:24px;
+font-weight:bold;
+color:blue;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:blue;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:darkblue;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Ticket Booked Successfully</h1>
+
+<div class="ticket-box" id="ticketDetails">
+
+</div>
+
+<button onclick="downloadTicket()">
+
+Download Ticket
+
+</button>
+
+</div>
+
+<script>
+
+const data =
+JSON.parse(localStorage.getItem("ticketData"));
+
+let passengerHTML = "";
+
+data.passengers.forEach((passenger,index)=>{
+
+passengerHTML += `
+
+<div class="passenger-box">
+
+<h3>Passenger ${index+1}</h3>
+
+<p><b>Name:</b> ${passenger.passenger_name}</p>
+
+<p><b>Age:</b> ${passenger.age}</p>
+
+<p><b>Gender:</b> ${passenger.gender}</p>
+
+<p><b>Seat Number:</b> ${passenger.seat_number}</p>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("ticketDetails").innerHTML = `
+
+<p><b>Username:</b> ${data.username}</p>
+
+<p><b>Email:</b> ${data.email}</p>
+
+<p><b>Mobile:</b> ${data.mobile}</p>
+
+<hr>
+
+<p><b>From:</b> ${data.from_place}</p>
+
+<p><b>To:</b> ${data.to_place}</p>
+
+<p><b>Journey Date:</b> ${data.journey_date}</p>
+
+<p><b>Bus Type:</b> ${data.bus_type}</p>
+
+<p><b>Travels Name:</b> ${data.travels_name}</p>
+
+<hr>
+
+<p><b>Base Price:</b> ₹ ${data.base_price}</p>
+
+<p><b>GST:</b> ₹ ${data.gst}</p>
+
+<p><b>State Tax:</b> ₹ ${data.state_tax}</p>
+
+<p><b>Toll Fee:</b> ₹ ${data.toll_fee}</p>
+
+<p class="total">
+
+Total Amount: ₹ ${data.total_price}
+
+</p>
+
+<p><b>Payment Status:</b> ${data.payment_status}</p>
+
+<hr>
+
+<h2>Passenger Details</h2>
+
+${passengerHTML}
+
+`;
+
+function downloadTicket(){
+
+window.print();
+
+}
+
+</script>
+
+</body>
+
+</html>
