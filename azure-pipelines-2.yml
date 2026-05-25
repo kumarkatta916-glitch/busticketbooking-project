@@ -1,0 +1,23 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- script: echo "Hello Azure DevOps"
+  displayName: Test Pipeline
+
+- script: docker --version
+  displayName: Check Docker
+
+- script: |
+    cd frontend
+    docker build -t bus-frontend .
+  displayName: Build Frontend
+
+- script: |
+    cd backend
+    docker build -t bus-backend .
+  displayName: Build Backend
