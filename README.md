@@ -149,6 +149,28 @@ Project Source Code:
 - Kubernetes Deployment
 - Ticket Email Generation
 
+
+# Setup Secrets
+
+Before deploying the application, create your own Kubernetes secret.
+
+```bash
+kubectl apply -f kubernetes/secret.yaml
+```
+
+Create `secret.yaml` using `secret-example.yaml` as a reference and replace the placeholder values with your own credentials.
+
+Required values:
+
+* DB_USER
+* DB_PASSWORD
+* EMAIL_USER
+* EMAIL_PASSWORD
+
+```
+```
+
+
 ---
 
 # Author
