@@ -1,0 +1,11 @@
+# Kubernetes Secrets
+kubernetes/secret.yaml
+
+# Vim swap files
+*.swp
+
+# Python cache
+__pycache__/
+
+# Environment files
+.env
