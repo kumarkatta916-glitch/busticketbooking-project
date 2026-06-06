@@ -30,7 +30,8 @@ spec:
 
       - name: frontend-container
 
-        image: kiran5454/bus-frontend:v29
+        image: kiran5454/bus-ticket-frontend:v11
+
 
         ports:
 

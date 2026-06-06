@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bus-booking-config
+
+data:
+  DB_HOST: busticketsql.mysql.database.azure.com
+  DB_NAME: busbooking
+  SMTP_HOST: smtp.gmail.com
+  SMTP_PORT: "587"

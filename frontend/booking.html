@@ -1,59 +1,126 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-
 <title>Passenger Details</title>
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
+*{
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(-45deg,#4f46e5,#7c3aed,#06b6d4,#9333ea);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:30px;
+overflow:hidden;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 .container{
-width:450px;
-background:white;
-padding:20px;
-margin:auto;
-margin-top:50px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+width:550px;
+max-width:95%;
+padding:35px;
+border-radius:25px;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+color:white;
+position:relative;
+z-index:10;
 }
 
 h2{
 text-align:center;
-color:blue;
+font-size:34px;
+margin-bottom:20px;
 }
 
 input{
 width:100%;
-padding:12px;
-margin-top:15px;
-border:1px solid gray;
-border-radius:5px;
+padding:14px;
+margin-top:12px;
+border:none;
+outline:none;
+border-radius:12px;
 font-size:16px;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+input::placeholder{
+color:#eee;
 }
 
 button{
 width:100%;
-padding:12px;
+padding:15px;
 margin-top:20px;
-background:blue;
-color:white;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:12px;
+background:linear-gradient(90deg,#06b6d4,#3b82f6);
+color:white;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:translateY(-3px);
+box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+.particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:1;
+overflow:hidden;
+}
+
+.particles span{
+position:absolute;
+width:25px;
+height:25px;
+background:rgba(255,255,255,0.25);
+border-radius:50%;
+bottom:-150px;
+animation:float 15s linear infinite;
+}
+
+.particles span:nth-child(1){left:10%;}
+.particles span:nth-child(2){left:30%;}
+.particles span:nth-child(3){left:50%;}
+.particles span:nth-child(4){left:70%;}
+.particles span:nth-child(5){left:90%;}
+
+@keyframes float{
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:1;
+}
+100%{
+transform:translateY(-1200px) rotate(720deg);
+opacity:0;
+}
 }
 
 </style>
@@ -62,9 +129,21 @@ background:darkblue;
 
 <body>
 
+<div class="particles">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>	
+
 <div class="container">
 
-<h2>Passenger Details</h2>
+<h2>👤 Passenger Information</h2>
+
+<p style="text-align:center;margin-bottom:15px;color:#eee;">
+Enter passenger contact information to continue booking
+</p>
 
 <input
 type="email"
@@ -79,9 +158,7 @@ placeholder="Enter Mobile Number"
 >
 
 <button onclick="nextPage()">
-
-Next
-
+🚌 Continue To Journey Details
 </button>
 
 </div>
@@ -91,21 +168,20 @@ Next
 function nextPage(){
 
 const email =
-document.getElementById("email").value;
+document.getElementById("email").value.trim();
 
 const mobile =
-document.getElementById("mobile").value;
+document.getElementById("mobile").value.trim();
 
-if(email=="" || mobile==""){
+if(email === "" || mobile === ""){
 
 alert("Please Fill All Fields");
-
 return;
 
 }
 
 const username =
-localStorage.getItem("username");
+localStorage.getItem("username") || "Guest";
 
 localStorage.setItem(
 
@@ -114,21 +190,18 @@ localStorage.setItem(
 JSON.stringify({
 
 username:username,
-
 email:email,
-
 mobile:mobile
 
 })
 
 );
 
-window.location.href="journey.html";
+window.location.href = "journey.html";
 
 }
 
 </script>
 
 </body>
-
 </html>

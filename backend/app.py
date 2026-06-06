@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 import mysql.connector
 import random
 import smtplib
@@ -16,13 +17,13 @@ CORS(app)
 
 db = mysql.connector.connect(
 
-host="YOUR_DATABASE_HOST",
+host=os.getenv("DB_HOST"),
 
-user="YOUR_DATABASE_USER",
+user=os.getenv("DB_USER"),
 
-password="YOUR_DATABASE_PASSWORD",
+password=os.getenv("DB_PASSWORD"),
 
-database="busbooking"
+database=os.getenv("DB_NAME")
 
 )
 
@@ -32,9 +33,9 @@ cursor = db.cursor()
 # EMAIL CONFIGURATION
 # =========================
 
-sender_email = "mybusbookingapp@gmail.com"
+sender_email = os.getenv("EMAIL_USER")
 
-sender_password = "YOUR_APP_PASSWORD"
+sender_password = os.getenv("EMAIL_PASSWORD")
 
 # =========================
 # OTP STORAGE
@@ -300,35 +301,25 @@ def login():
 # =========================
 
 @app.route('/book', methods=['POST'])
-
 def book_ticket():
 
     data = request.json
 
     username = data['username']
-
     email = data['email']
-
     mobile = data['mobile']
 
     from_place = data['from_place']
-
     to_place = data['to_place']
-
     journey_date = data['journey_date']
 
     bus_type = data['bus_type']
-
     travels_name = data['travels_name']
 
     base_price = data['base_price']
-
     gst = data['gst']
-
     state_tax = data['state_tax']
-
     toll_fee = data['toll_fee']
-
     total_price = data['total_price']
 
     payment_status = data['payment_status']
@@ -337,88 +328,100 @@ def book_ticket():
 
     booking_id = "BUS" + str(random.randint(10000,99999))
 
+    # =========================
+    # SAVE BOOKING
+    # =========================
+
+    booking_query = """
+    INSERT INTO bookings
+    (
+    booking_id,
+    username,
+    email,
+    mobile,
+    from_place,
+    to_place,
+    journey_date,
+    bus_type,
+    travels_name,
+    ticket_count,
+    base_price,
+    gst,
+    state_tax,
+    toll_fee,
+    total_price,
+    payment_status
+    )
+    VALUES
+    (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """
+
+    booking_values = (
+        booking_id,
+        username,
+        email,
+        mobile,
+        from_place,
+        to_place,
+        journey_date,
+        bus_type,
+        travels_name,
+        len(passengers),
+        base_price,
+        gst,
+        state_tax,
+        toll_fee,
+        total_price,
+        payment_status
+    )
+
+    cursor.execute(
+        booking_query,
+        booking_values
+    )
+
+    # =========================
     # SAVE PASSENGERS
+    # =========================
 
     for passenger in passengers:
 
-        passenger_name = passenger['passenger_name']
-
-        age = passenger['age']
-
-        gender = passenger['gender']
-
-        seat_number = passenger['seat_number']
-
-        query = """
-
-        INSERT INTO bookings
-
+        passenger_query = """
+        INSERT INTO passengers
         (
-
         booking_id,
-
-        username,
-
         passenger_name,
-
         age,
-
         gender,
-
-        from_place,
-
-        to_place,
-
-        bus_type,
-
-        travels_name,
-
-        seat_number,
-
-        journey_date,
-
-        payment_status
-
+        seat_number
         )
-
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-
+        VALUES
+        (%s,%s,%s,%s,%s)
         """
 
-        values = (
+        passenger_values = (
 
             booking_id,
 
-            username,
+            passenger['passenger_name'],
 
-            passenger_name,
+            passenger['age'],
 
-            age,
+            passenger['gender'],
 
-            gender,
-
-            from_place,
-
-            to_place,
-
-            bus_type,
-
-            travels_name,
-
-            seat_number,
-
-            journey_date,
-
-            payment_status
+            passenger['seat_number']
 
         )
 
-        cursor.execute(query,values)
+        cursor.execute(
+            passenger_query,
+            passenger_values
+        )
 
     db.commit()
 
     # =========================
-    # SEND TICKET EMAIL
+    # SEND EMAIL
     # =========================
 
     try:
@@ -439,9 +442,7 @@ Seat Number    : {passenger['seat_number']}
         msg = MIMEMultipart()
 
         msg['From'] = sender_email
-
         msg['To'] = email
-
         msg['Subject'] = "Bus Ticket Confirmation"
 
         body = f"""
@@ -485,22 +486,26 @@ Bus Ticket Booking Team
 
 """
 
-        msg.attach(MIMEText(body,'plain'))
+        msg.attach(
+            MIMEText(body,'plain')
+        )
 
-        server = smtplib.SMTP("smtp.gmail.com",587)
+        server = smtplib.SMTP(
+            "smtp.gmail.com",
+            587
+        )
 
         server.starttls()
 
-        server.login(sender_email,sender_password)
+        server.login(
+            sender_email,
+            sender_password
+        )
 
         server.sendmail(
-
             sender_email,
-
             email,
-
             msg.as_string()
-
         )
 
         server.quit()
@@ -512,6 +517,8 @@ Bus Ticket Booking Team
     return jsonify({
 
         "status":"success",
+
+        "booking_id":booking_id,
 
         "message":"Ticket Booked Successfully"
 

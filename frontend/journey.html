@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -9,59 +10,130 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
+*{
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(-45deg,#4f46e5,#7c3aed,#06b6d4,#9333ea);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+min-height:100vh;
+padding:30px;
+overflow-x:hidden;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 .container{
-width:600px;
-background:white;
-padding:20px;
+width:700px;
+max-width:95%;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+padding:30px;
 margin:auto;
-margin-top:30px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+border-radius:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+color:white;
+position:relative;
+z-index:10;
 }
 
 h2{
 text-align:center;
-color:blue;
+margin-bottom:20px;
+font-size:34px;
+color:white;
 }
 
 input,select{
 width:100%;
-padding:12px;
+padding:14px;
 margin-top:12px;
-border:1px solid gray;
-border-radius:5px;
+border:none;
+outline:none;
+border-radius:12px;
 font-size:16px;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+input::placeholder{
+color:#eee;
+}
+
+option{
+color:black;
 }
 
 button{
 width:100%;
-padding:12px;
+padding:14px;
 margin-top:20px;
-background:blue;
-color:white;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:12px;
+background:linear-gradient(90deg,#06b6d4,#3b82f6);
+color:white;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:translateY(-3px);
 }
 
 .passenger-box{
-border:1px solid gray;
+border:1px solid rgba(255,255,255,0.3);
 padding:15px;
 margin-top:20px;
-border-radius:10px;
-background:#f9f9f9;
+border-radius:15px;
+background:rgba(255,255,255,0.1);
+}
+
+.particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:1;
+}
+
+.particles span{
+position:absolute;
+width:20px;
+height:20px;
+background:rgba(255,255,255,0.3);
+border-radius:50%;
+animation:float 15s linear infinite;
+bottom:-150px;
+}
+
+.particles span:nth-child(1){left:10%;}
+.particles span:nth-child(2){left:30%;}
+.particles span:nth-child(3){left:50%;}
+.particles span:nth-child(4){left:70%;}
+.particles span:nth-child(5){left:90%;}
+
+@keyframes float{
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:1;
+}
+100%{
+transform:translateY(-1200px) rotate(720deg);
+opacity:0;
+}
 }
 
 </style>
@@ -70,21 +142,47 @@ background:#f9f9f9;
 
 <body>
 
+<div class="particles">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>
+
 <div class="container">
 
 <h2>Journey Details</h2>
 
-<input
-type="text"
-id="from_place"
-placeholder="From Place"
->
+<select id="from_place">
 
-<input
-type="text"
-id="to_place"
-placeholder="To Place"
->
+<option value="">Select From City</option>
+
+<option>Hyderabad</option>
+<option>Vijayawada</option>
+<option>Visakhapatnam</option>
+<option>Rajahmundry</option>
+<option>Kakinada</option>
+<option>Tirupati</option>
+<option>Bengaluru</option>
+<option>Chennai</option>
+
+</select>
+
+<select id="to_place">
+
+<option value="">Select To City</option>
+
+<option>Hyderabad</option>
+<option>Vijayawada</option>
+<option>Visakhapatnam</option>
+<option>Rajahmundry</option>
+<option>Kakinada</option>
+<option>Tirupati</option>
+<option>Bengaluru</option>
+<option>Chennai</option>
+
+</select>
 
 <input
 type="date"
@@ -95,17 +193,33 @@ id="journey_date"
 
 <option value="">Select Bus Type</option>
 
-<option>Sleeper</option>
+<option>AC Sleeper</option>
 
-<option>Seater</option>
+<option>Non AC Sleeper</option>
+
+<option>AC Seater</option>
+
+<option>Non AC Seater</option>
 
 </select>
 
-<input
-type="text"
-id="travels_name"
-placeholder="Travels Name"
->
+<select id="travels_name">
+
+<option value="">Select Travels</option>
+
+<option>VRL Travels</option>
+
+<option>Orange Travels</option>
+
+<option>SRS Travels</option>
+
+<option>Kaveri Travels</option>
+
+<option>APSRTC Garuda</option>
+
+<option>Morning Star Travels</option>
+
+</select>
 
 <input
 type="number"
@@ -180,7 +294,7 @@ placeholder="Passenger Age"
 
 </select>
 
-<select id="seat${i}">
+<select id="seat${i}" onchange="updateSeats()">
 
 <option value="">Select Seat</option>
 
@@ -203,19 +317,92 @@ function generateSeats(){
 
 let seats = "";
 
-for(let i=1;i<=16;i++){
+const busType =
+document.getElementById("bus_type").value;
 
-seats += `<option>S${i}</option>`;
+if(
+busType=="AC Sleeper" ||
+busType=="Non AC Sleeper"
+){
+
+    for(let i=1;i<=16;i++){
+
+        seats += `<option value="S${i}">S${i}</option>`;
+
+    }
 
 }
+else if(
+busType=="AC Seater" ||
+busType=="Non AC Seater"
+){
 
-for(let i=1;i<=20;i++){
+    for(let i=1;i<=20;i++){
 
-seats += `<option>L${i}</option>`;
+        seats += `<option value="L${i}">L${i}</option>`;
+
+    }
 
 }
 
 return seats;
+
+}
+
+let selectedSeats = [];
+
+function updateSeats(){
+
+selectedSeats = [];
+
+const count =
+document.getElementById("ticket_count").value;
+
+for(let i=1;i<=count;i++){
+
+    const seat =
+    document.getElementById(`seat${i}`);
+
+    if(seat && seat.value!=""){
+
+        selectedSeats.push(seat.value);
+
+    }
+
+}
+
+for(let i=1;i<=count;i++){
+
+    const dropdown =
+    document.getElementById(`seat${i}`);
+
+    if(!dropdown) continue;
+
+    const currentValue =
+    dropdown.value;
+
+    for(let j=0;j<dropdown.options.length;j++){
+
+        const option =
+        dropdown.options[j];
+
+        option.disabled = false;
+
+        if(
+            selectedSeats.includes(option.value)
+            &&
+            option.value != currentValue
+            &&
+            option.value != ""
+        ){
+
+            option.disabled = true;
+
+        }
+
+    }
+
+}
 
 }
 
@@ -237,7 +424,9 @@ const travels_name =
 document.getElementById("travels_name").value;
 
 const ticket_count =
-document.getElementById("ticket_count").value;
+parseInt(
+document.getElementById("ticket_count").value
+);
 
 if(
 from_place=="" ||
@@ -245,7 +434,7 @@ to_place=="" ||
 journey_date=="" ||
 bus_type=="" ||
 travels_name=="" ||
-ticket_count==""
+!ticket_count
 ){
 
 alert("Please Fill All Journey Details");
@@ -293,15 +482,25 @@ gender:gender,
 
 seat_number:seat_number
 
-})
+});
 
 }
 
 let ticketPrice = 0;
 
-if(bus_type=="Sleeper"){
+if(bus_type=="AC Sleeper"){
+
+ticketPrice = 1500;
+
+}
+else if(bus_type=="Non AC Sleeper"){
 
 ticketPrice = 1200;
+
+}
+else if(bus_type=="AC Seater"){
+
+ticketPrice = 1000;
 
 }
 else{

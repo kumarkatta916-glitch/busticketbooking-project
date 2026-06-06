@@ -5,55 +5,140 @@
 
 <meta charset="UTF-8">
 
-<title>Login Page</title>
+<title>Bus Booking Login</title>
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
+*{
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#667eea,#764ba2);
 }
 
 .container{
 width:400px;
-background:white;
-padding:20px;
-margin:auto;
-margin-top:80px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+padding:35px;
+border-radius:20px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+color:white;
 }
 
 h2{
 text-align:center;
-color:blue;
+margin-bottom:25px;
+font-size:30px;
+}
+
+.input-group{
+margin-bottom:20px;
 }
 
 input{
 width:100%;
-padding:12px;
-margin-top:15px;
-border:1px solid gray;
-border-radius:5px;
+padding:14px;
+border:none;
+outline:none;
+border-radius:10px;
 font-size:16px;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+input::placeholder{
+color:#ddd;
+}
+
+.password-box{
+position:relative;
+}
+
+.show-btn{
+position:absolute;
+right:10px;
+top:12px;
+cursor:pointer;
+font-size:14px;
+color:white;
 }
 
 button{
 width:100%;
-padding:12px;
-margin-top:20px;
-background:blue;
-color:white;
+padding:14px;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:10px;
+background:#00c6ff;
+background:linear-gradient(to right,#0072ff,#00c6ff);
+color:white;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:scale(1.03);
+}
+
+.links{
+margin-top:20px;
+text-align:center;
+}
+
+.links a{
+color:white;
+text-decoration:none;
+font-size:15px;
+}
+
+.links a:hover{
+text-decoration:underline;
+}
+
+.bus-road{
+position:absolute;
+bottom:70px;
+width:100%;
+overflow:hidden;
+}
+
+.bus{
+position:fixed;
+bottom:60px;
+left:-120px;
+font-size:70px;
+z-index:9999;
+animation:moveBus 8s linear infinite;
+}
+
+.road{
+position:absolute;
+bottom:50px;
+width:100%;
+height:6px;
+background:white;
+}
+
+@keyframes moveBus{
+
+0%{
+left:-120px;
+}
+
+100%{
+left:110%;
+}
+
 }
 
 </style>
@@ -62,9 +147,17 @@ background:darkblue;
 
 <body>
 
+<div class="road"></div>
+
+<div class="bus-road">
+<div class="bus">🚍</div>
+</div>
+
 <div class="container">
 
-<h2>User Login</h2>
+<h2>Login</h2>
+
+<div class="input-group">
 
 <input
 type="text"
@@ -72,23 +165,65 @@ id="username"
 placeholder="Enter Username"
 >
 
+</div>
+
+<div class="input-group password-box">
+
 <input
 type="password"
 id="password"
 placeholder="Enter Password"
 >
 
-<button onclick="login()">
+<span
+class="show-btn"
+onclick="togglePassword()"
+>
+Show
+</span>
+
+</div>
+
+<button onclick="loginUser()">
 
 Login
 
 </button>
 
+<div class="links">
+
+<p>
+Don't have an account?
+<a href="register.html">
+Register Now
+</a>
+</p>
+
+</div>
+
 </div>
 
 <script>
 
-function login(){
+function togglePassword(){
+
+const password =
+document.getElementById("password");
+
+if(password.type==="password"){
+
+password.type="text";
+
+}
+else{
+
+password.type="password";
+
+}
+
+}
+
+function loginUser(){
 
 const username =
 document.getElementById("username").value;
@@ -104,7 +239,7 @@ return;
 
 }
 
-fetch("http://localhost:5000/login",{
+fetch("http://20.164.53.61:5000/login",{
 
 method:"POST",
 
@@ -128,19 +263,19 @@ password:password
 
 if(data.status=="success"){
 
-alert("Login Successful");
-
 localStorage.setItem(
 "username",
 username
 );
+
+alert("Login Successful");
 
 window.location.href="booking.html";
 
 }
 else{
 
-alert("Invalid Username or Password");
+alert(data.message);
 
 }
 
@@ -150,9 +285,7 @@ alert("Invalid Username or Password");
 
 alert("Backend Connection Failed");
 
-console.log(error);
-
-})
+});
 
 }
 

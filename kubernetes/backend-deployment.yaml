@@ -1,37 +1,103 @@
 apiVersion: apps/v1
-
 kind: Deployment
 
 metadata:
-
   name: backend-deployment
 
 spec:
-
-  replicas: 2
+  replicas: 1
 
   selector:
-
     matchLabels:
-
       app: backend
 
   template:
 
     metadata:
-
       labels:
-
         app: backend
 
     spec:
 
       containers:
 
-      - name: backend-container
+      - name: backend
 
-        image: kiran5454/bus-backend:v17
+        image: kiran5454/bus-ticket-backend:v5
+
+        imagePullPolicy: Always
 
         ports:
 
         - containerPort: 5000
+
+        env:
+
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: bus-booking-config
+              key: DB_HOST
+
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: bus-booking-config
+              key: DB_NAME
+
+        - name: SMTP_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: bus-booking-config
+              key: SMTP_HOST
+
+        - name: SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: bus-booking-config
+              key: SMTP_PORT
+
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: bus-booking-secret
+              key: DB_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bus-booking-secret
+              key: DB_PASSWORD
+
+        - name: EMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              name: bus-booking-secret
+              key: EMAIL_USER
+
+        - name: EMAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bus-booking-secret
+              key: EMAIL_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: backend-service
+
+spec:
+
+  selector:
+    app: backend
+
+  ports:
+
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+
+  type: ClusterIP
+

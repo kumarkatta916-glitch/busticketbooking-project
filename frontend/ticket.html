@@ -9,88 +9,199 @@
 
 <style>
 
+*{
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
 body{
-font-family:Arial;
-background:#f2f2f2;
-margin:0;
-padding:0;
+background:linear-gradient(135deg,#0f172a,#1e293b,#0f766e);
+min-height:100vh;
+padding:30px;
+overflow-x:hidden;
+color:white;
 }
 
 .container{
-width:700px;
-background:white;
-padding:20px;
+width:900px;
+max-width:95%;
 margin:auto;
-margin-top:30px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+padding:30px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+border-radius:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.4);
+position:relative;
+z-index:10;
 }
 
-h1{
+.thank-you-box{
 text-align:center;
-color:green;
+padding:25px;
+margin-bottom:25px;
+border-radius:20px;
+background:rgba(16,185,129,0.15);
+border:1px solid rgba(16,185,129,0.4);
+animation:glow 2s infinite alternate;
+}
+
+.thank-you-box h1{
+font-size:40px;
+color:#22c55e;
+margin-bottom:10px;
+}
+
+.thank-you-box p{
+font-size:20px;
+color:#ffffff;
 }
 
 .ticket-box{
 margin-top:20px;
-padding:20px;
-border:2px dashed gray;
-border-radius:10px;
-background:#f9f9f9;
-}
-
-p{
-font-size:18px;
-margin:8px 0;
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.15);
 }
 
 .passenger-box{
-margin-top:20px;
+margin-top:15px;
 padding:15px;
-border:1px solid gray;
-border-radius:10px;
-background:white;
+border-radius:15px;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.15);
 }
 
 .total{
-font-size:24px;
+font-size:30px;
 font-weight:bold;
-color:blue;
+color:#22c55e;
+text-align:center;
 }
 
 button{
 width:100%;
-padding:12px;
-margin-top:20px;
-background:blue;
-color:white;
+padding:15px;
+margin-top:25px;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:15px;
+background:linear-gradient(90deg,#10b981,#22c55e);
+color:white;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:translateY(-3px);
+box-shadow:0 0 25px rgba(34,197,94,0.6);
 }
 
+@keyframes glow{
+from{
+box-shadow:0 0 10px rgba(34,197,94,0.3);
+}
+to{
+box-shadow:0 0 30px rgba(34,197,94,0.9);
+}
+}
+
+.stars{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+z-index:1;
+}
+
+.star{
+position:absolute;
+width:6px;
+height:6px;
+background:white;
+border-radius:50%;
+animation:twinkle 4s infinite;
+}
+
+.star:nth-child(1){
+left:10%;
+top:20%;
+}
+
+.star:nth-child(2){
+left:30%;
+top:60%;
+}
+
+.star:nth-child(3){
+left:50%;
+top:15%;
+}
+
+.star:nth-child(4){
+left:70%;
+top:70%;
+}
+
+.star:nth-child(5){
+left:90%;
+top:30%;
+}
+
+@keyframes twinkle{
+
+0%{
+opacity:0.2;
+transform:scale(1);
+}
+
+50%{
+opacity:1;
+transform:scale(2);
+}
+
+100%{
+opacity:0.2;
+transform:scale(1);
+}
+
+}
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="stars">
+<div class="star"></div>
+<div class="star"></div>
+<div class="star"></div>
+<div class="star"></div>
+<div class="star"></div>
+</div>	
 
-<h1>Ticket Booked Successfully</h1>
+<div class="thank-you-box">
 
-<div class="ticket-box" id="ticketDetails">
+<h1>🎉 Thank You For Booking With Us 🎉</h1>
+
+<p>
+We appreciate your trust.
+Visit Again For Your Next Journey 🚍
+</p>
 
 </div>
 
+<div class="ticket-box" id="ticketDetails">
+	
+</div>	
+
 <button onclick="downloadTicket()">
 
-Download Ticket
+📄 Download Your Ticket PDF
 
 </button>
 
@@ -98,8 +209,58 @@ Download Ticket
 
 <script>
 
-const data =
-JSON.parse(localStorage.getItem("ticketData"));
+const passengerData =
+JSON.parse(localStorage.getItem("passengerData"));
+
+const journeyData =
+JSON.parse(localStorage.getItem("journeyData"));
+
+if(!journeyData){
+
+alert("Ticket Data Not Found");
+
+window.location.href="journey.html";
+
+}
+
+const data = {
+
+username: passengerData?.username || "",
+
+email: passengerData?.email || "",
+
+mobile: passengerData?.mobile || "",
+
+from_place: journeyData?.from_place || "",
+
+to_place: journeyData?.to_place || "",
+
+journey_date: journeyData?.journey_date || "",
+
+bus_type: journeyData?.bus_type || "",
+
+travels_name: journeyData?.travels_name || "",
+
+ticket_count: journeyData?.ticket_count || 0,
+
+base_price: journeyData?.base_price || 0,
+
+gst: journeyData?.gst || 0,
+
+state_tax: journeyData?.state_tax || 0,
+
+toll_fee: journeyData?.toll_fee || 0,
+
+total_price: journeyData?.total_price || 0,
+
+passengers: journeyData?.passengers || [],
+
+payment_status: "SUCCESS"
+
+};
+
+const bookingId =
+"BUS" + Math.floor(Math.random()*100000);
 
 let passengerHTML = "";
 
@@ -127,6 +288,8 @@ passengerHTML += `
 
 document.getElementById("ticketDetails").innerHTML = `
 
+<p><b>Booking ID:</b> ${bookingId}</p>
+
 <p><b>Username:</b> ${data.username}</p>
 
 <p><b>Email:</b> ${data.email}</p>
@@ -144,6 +307,8 @@ document.getElementById("ticketDetails").innerHTML = `
 <p><b>Bus Type:</b> ${data.bus_type}</p>
 
 <p><b>Travels Name:</b> ${data.travels_name}</p>
+
+<p><b>Ticket Count:</b> ${data.ticket_count}</p>
 
 <hr>
 
@@ -182,3 +347,5 @@ window.print();
 </body>
 
 </html>
+
+

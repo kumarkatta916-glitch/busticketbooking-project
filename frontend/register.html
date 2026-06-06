@@ -5,55 +5,157 @@
 
 <meta charset="UTF-8">
 
-<title>User Registration</title>
+<title>Bus Booking Registration</title>
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
+*{
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#4f46e5,#7c3aed,#9333ea);
+overflow:auto;
+position:relative;
+}
+
+/* Floating Animation */
+
+.bg-animation{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:1;
+}
+
+.bg-animation span{
+position:absolute;
+display:block;
+border-radius:50%;
+background:rgba(255,255,255,0.15);
+animation:animate 20s linear infinite;
+bottom:-150px;
+}
+
+.bg-animation span:nth-child(1){
+left:10%;
+width:80px;
+height:80px;
+animation-duration:18s;
+}
+
+.bg-animation span:nth-child(2){
+left:25%;
+width:120px;
+height:120px;
+animation-duration:25s;
+}
+
+.bg-animation span:nth-child(3){
+left:50%;
+width:60px;
+height:60px;
+animation-duration:15s;
+}
+
+.bg-animation span:nth-child(4){
+left:75%;
+width:100px;
+height:100px;
+animation-duration:22s;
+}
+
+.bg-animation span:nth-child(5){
+left:90%;
+width:140px;
+height:140px;
+animation-duration:28s;
+}
+
+@keyframes animate{
+
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:1;
+}
+
+100%{
+transform:translateY(-1200px) rotate(720deg);
+opacity:0;
+}
+
 }
 
 .container{
-width:450px;
-background:white;
-padding:20px;
-margin:auto;
-margin-top:40px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+width:550px;
+padding:35px;
+border-radius:25px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(20px);
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+color:white;
+z-index:10;
+margin:40px 0;
 }
 
 h2{
 text-align:center;
-color:blue;
+font-size:34px;
+margin-bottom:20px;
 }
 
-input,select{
+input,
+select{
 width:100%;
-padding:12px;
+padding:14px;
 margin-top:12px;
-border:1px solid gray;
-border-radius:5px;
+border:none;
+outline:none;
+border-radius:12px;
 font-size:16px;
+background:rgba(255,255,255,0.2);
+color:white;
+}
+
+input::placeholder{
+color:#e5e7eb;
+}
+
+select{
+color:white;
+}
+
+option{
+color:black;
 }
 
 button{
 width:100%;
-padding:12px;
-margin-top:20px;
-background:blue;
-color:white;
+padding:14px;
+margin-top:15px;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:12px;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+background:linear-gradient(90deg,#06b6d4,#3b82f6);
+color:white;
+transition:.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
 
 </style>
@@ -62,9 +164,17 @@ background:darkblue;
 
 <body>
 
+<div class="bg-animation">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>
+
 <div class="container">
 
-<h2>User Registration</h2>
+<h2>✨ Bus Booking Registration</h2>
 
 <input
 type="text"
@@ -124,7 +234,7 @@ placeholder="Enter Password"
 
 <button onclick="generateOTP()">
 
-Generate OTP
+📩 Generate OTP
 
 </button>
 
@@ -195,7 +305,7 @@ password:password
 
 );
 
-fetch("http://localhost:5000/send-otp",{
+fetch("http://20.164.53.61:5000/send-otp",{
 
 method:"POST",
 
@@ -236,3 +346,5 @@ console.log(error);
 </body>
 
 </html>
+
+

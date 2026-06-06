@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -9,34 +10,55 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
+*{
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(-45deg,#4f46e5,#7c3aed,#06b6d4,#9333ea);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+min-height:100vh;
+padding:30px;
+overflow-x:hidden;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 .container{
-width:500px;
-background:white;
-padding:20px;
+width:700px;
+max-width:95%;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+padding:30px;
 margin:auto;
-margin-top:50px;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
+border-radius:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+color:white;
+position:relative;
+z-index:10;
 }
 
 h2{
 text-align:center;
-color:blue;
+font-size:34px;
+margin-bottom:20px;
+color:white;
 }
 
 .price-box{
 margin-top:20px;
-padding:15px;
-border:1px solid gray;
-border-radius:10px;
-background:#f9f9f9;
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,0.1);
+border:1px solid rgba(255,255,255,0.2);
 }
 
 p{
@@ -44,26 +66,75 @@ font-size:18px;
 margin:10px 0;
 }
 
+.passenger{
+padding:15px;
+margin-top:12px;
+border-radius:12px;
+background:rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.2);
+}
+
 .total{
-font-size:24px;
+font-size:28px;
 font-weight:bold;
-color:green;
+color:#00ff9d;
+text-align:center;
 }
 
 button{
 width:100%;
-padding:12px;
+padding:15px;
 margin-top:20px;
-background:blue;
-color:white;
 border:none;
-border-radius:5px;
-font-size:16px;
+border-radius:12px;
+background:linear-gradient(90deg,#06b6d4,#3b82f6);
+color:white;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:darkblue;
+transform:translateY(-3px);
+box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+.particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:1;
+}
+
+.particles span{
+position:absolute;
+width:20px;
+height:20px;
+background:rgba(255,255,255,0.3);
+border-radius:50%;
+animation:float 15s linear infinite;
+bottom:-150px;
+}
+
+.particles span:nth-child(1){left:10%;}
+.particles span:nth-child(2){left:30%;}
+.particles span:nth-child(3){left:50%;}
+.particles span:nth-child(4){left:70%;}
+.particles span:nth-child(5){left:90%;}
+
+@keyframes float{
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:1;
+}
+100%{
+transform:translateY(-1200px) rotate(720deg);
+opacity:0;
+}
 }
 
 </style>
@@ -72,9 +143,17 @@ background:darkblue;
 
 <body>
 
+<div class="particles">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>
+
 <div class="container">
 
-<h2>Price Details</h2>
+<h2>💰 Price Summary</h2>
 
 <div class="price-box" id="priceDetails">
 
@@ -82,7 +161,7 @@ background:darkblue;
 
 <button onclick="goToPayment()">
 
-Proceed To Payment
+💳 Proceed To Payment
 
 </button>
 
@@ -92,6 +171,38 @@ Proceed To Payment
 
 const data =
 JSON.parse(localStorage.getItem("journeyData"));
+
+if(!data){
+
+alert("Journey Data Not Found");
+
+window.location.href="journey.html";
+
+}
+
+let passengerHTML = "";
+
+data.passengers.forEach((p,index)=>{
+
+passengerHTML += `
+
+<div class="passenger">
+
+<p><b>Passenger ${index+1}</b></p>
+
+<p>Name: ${p.passenger_name}</p>
+
+<p>Age: ${p.age}</p>
+
+<p>Gender: ${p.gender}</p>
+
+<p>Seat: ${p.seat_number}</p>
+
+</div>
+
+`;
+
+});
 
 document.getElementById("priceDetails").innerHTML = `
 
@@ -105,21 +216,27 @@ document.getElementById("priceDetails").innerHTML = `
 
 <p><b>Travels Name:</b> ${data.travels_name}</p>
 
+<p><b>Ticket Count:</b> ${data.ticket_count}</p>
+
 <hr>
 
-<p><b>Base Ticket Price:</b> ₹ ${data.base_price}</p>
+${passengerHTML}
 
-<p><b>GST (18%):</b> ₹ ${data.gst}</p>
+<hr>
 
-<p><b>State Tax:</b> ₹ ${data.state_tax}</p>
+<p><b>Base Ticket Price:</b> ₹ ${data.base_price.toFixed(2)}</p>
 
-<p><b>Toll Fee:</b> ₹ ${data.toll_fee}</p>
+<p><b>GST (18%):</b> ₹ ${data.gst.toFixed(2)}</p>
+
+<p><b>State Tax:</b> ₹ ${data.state_tax.toFixed(2)}</p>
+
+<p><b>Toll Fee:</b> ₹ ${data.toll_fee.toFixed(2)}</p>
 
 <hr>
 
 <p class="total">
 
-Total Amount: ₹ ${data.total_price}
+Total Amount: ₹ ${data.total_price.toFixed(2)}
 
 </p>
 
@@ -136,3 +253,4 @@ window.location.href = "payment.html";
 </body>
 
 </html>
+
